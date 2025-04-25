@@ -1,0 +1,125 @@
+#include <iostream>
+#include <string>
+#include <vector>
+using namespace std;
+
+// Clase Persona
+class Persona {
+public:
+    string Nombre;
+    string Apellido;
+
+private:
+    int Ci;
+    string Cu;
+
+public:
+    Persona() : Ci(0), Cu(""), Nombre(""), Apellido("") {}
+    Persona(int ci, string cu, string nom, string ape) : Ci(ci), Cu(cu), Nombre(nom), Apellido(ape) {}
+
+    string obtenerNombreCompleto() {
+        return Nombre + " " + Apellido;
+    }
+
+    void setCi(int ci) {
+        Ci = ci;
+    }
+
+    int getCi() {
+        return Ci;
+    }
+
+    string obtenerCarrera() {
+        string codigoCarrera = Cu.substr(0, 3); // Obtener los primeros 3 caracteres del código de carrera
+        if (codigoCarrera == "350") return "Sistemas";
+        else if (codigoCarrera == "560") return "Telecomunicaciones";
+        else if (codigoCarrera == "104") return "Diseño";
+        else if (codigoCarrera == "111") return "CICO";
+        else if (codigoCarrera == "112") return "TIS";
+        else return "Carrera desconocida";
+    }
+};
+
+// Clase CuentaBancaria
+class CuentaBancaria {
+private:
+    int NumCuenta;
+    float SaldoReal;
+
+public:
+    CuentaBancaria() : NumCuenta(0), SaldoReal(0.0f) {}
+
+    void Depositar(float monto) {
+        SaldoReal += monto;
+    }
+
+    bool SePuedeRetirar(float monto) {
+        return SaldoReal >= monto;
+    }
+
+    void Retirar(float monto) {
+        if (SePuedeRetirar(monto)) {
+            SaldoReal -= monto;
+        } else {
+            cout << "No se puede retirar el monto solicitado." << endl;
+        }
+    }
+
+    float getSaldo() {
+        return SaldoReal;
+    }
+};
+
+// Clase CuentaEstudiantil
+class CuentaEstudiantil : public CuentaBancaria {
+private:
+    float MontoPrestado;
+    float PorcentajeInteres;
+    int NroPrestamo;
+
+public:
+    CuentaEstudiantil() : MontoPrestado(0.0f), PorcentajeInteres(5.0f), NroPrestamo(0) {}
+
+    bool PuedePrestar(float monto) {
+        return MontoPrestado + monto <= LimiteMontoPrestamo();
+    }
+
+    float LimiteMontoPrestamo() {
+        return 5000.0f; // Límite fijo para el monto de préstamo
+    }
+
+    void Prestarse(float monto) {
+        if (PuedePrestar(monto) && getSaldo() > 0) {
+            MontoPrestado += monto;
+            NroPrestamo++;
+        } else {
+            cout << "No se puede realizar el préstamo." << endl;
+        }
+    }
+};
+
+// Función principal
+int main() {
+    // Crear un objeto Persona
+    Persona estudiante(758875, "3505990", "Giovann", "Coro");
+
+    // Imprimir nombre completo
+    cout << "Nombre completo: " << estudiante.obtenerNombreCompleto() << endl;
+
+    // Imprimir carrera
+    cout << "Carrera: " << estudiante.obtenerCarrera() << endl;
+
+    // Crear una cuenta bancaria
+    CuentaBancaria cuenta;
+    cuenta.Depositar(1000.0f);
+    cuenta.Retirar(500.0f);
+    cout << "Saldo después de retirar: " << cuenta.getSaldo() << endl;
+
+    // Crear una cuenta estudiantil
+    CuentaEstudiantil cuentaEstudiante;
+    cuentaEstudiante.Depositar(2000.0f);
+    cuentaEstudiante.Prestarse(3000.0f);
+    cout << "Saldo después del préstamo: " << cuentaEstudiante.getSaldo() << endl;
+
+    return 0;
+}
